@@ -1,21 +1,20 @@
-document.querySelector('button').onclick = function () {
+function realizarCalculo () {
     let valorInvestido = document.querySelector('#valor_investido').valueAsNumber;
     let taxaJuros = document.querySelector('#taxa_juros').valueAsNumber / 100;
     let periodo = document.querySelector('#periodo').valueAsNumber;
 
     let modeloPeriodo = document.querySelector('#modelo_periodo').value;
-    if (modeloPeriodo == 'anos') {
-        periodo = periodo * 12;
-    }
+        if (modeloPeriodo == 'anos') {
+            periodo = periodo * 12;
+        }
 
-    let modeloTaxa = document.querySelector('#modelo_taxa_juros').value;
-    if (modeloTaxa == 'anual') {
-        taxaJuros = taxaJuros / 12;
-    }
+        let modeloTaxa = document.querySelector('#modelo_taxa_juros').value;
+        if (modeloTaxa == 'anual') {
+            taxaJuros = taxaJuros / 12;
+        }
 
-    result = validar(valorInvestido, taxaJuros, periodo);
-
-    if (result == true) {
+    let dadosValidos = validarValoresDigitados(valorInvestido, taxaJuros, periodo);
+    if (dadosValidos == true) {
 
         let montante = calculaMontante(valorInvestido, taxaJuros, periodo);
         let jurosCompostos = calculaJurosCompostos(montante, valorInvestido);
@@ -61,32 +60,30 @@ function montarTabelaMensal(taxa, periodo, valorInvestido) {
         valorInvestido += jurosAtual;
 
         cellPeriodo.innerHTML = i;
-        cellJuros.innerHTML = parseFloat(jurosAtual.toFixed(2)).toLocaleString('PT');
-        cellMontante.innerHTML = parseFloat(valorInvestido.toFixed(2)).toLocaleString('PT');
+        cellJuros.innerHTML = 'R$ ' + parseFloat(jurosAtual.toFixed(2)).toLocaleString('PT');
+        cellMontante.innerHTML = 'R$ ' + parseFloat(valorInvestido.toFixed(2)).toLocaleString('PT');
     }
 }
 
-function validar(valorInvestido, taxaJuros, periodo) {
-
-    if (periodo == 0 || periodo > 600) {
-        alert("Informe um período diferente de zero e menor ou igual a 50 anos, ou 600 meses");
-        formulario.periodo.focus();
+function validarValoresDigitados(valorInvestido, taxaJuros, periodo) {
+    if (valorInvestido == 0 || isNaN(valorInvestido)) {
+        alert("Digite um valor para o valor investido");
+        formulario.valor_investido.focus();
         return false;
     }
 
-    if (taxaJuros == 0) {
+    if (taxaJuros == 0 || isNaN(taxaJuros)) {
         alert("Digite um valor para a taxa de juros");
         formulario.taxa_juros.focus();
         return false;
     }
 
-    if (valorInvestido == 0) {
-        alert("Digite um valor para o valor investido");
-        formulario.valor_investido.focus();
+    if (periodo == 0 || periodo > 600 || isNaN(periodo)) {
+        alert("Informe um período diferente de zero e menor ou igual a 50 anos, ou 600 meses");
+        formulario.periodo.focus();
         return false;
     }
 
     return true;
 
 }
-
